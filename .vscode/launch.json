@@ -213,14 +213,38 @@
 			]
 		},
 		{
-			"name": "Launch Tests (Flutter for web)",
+			"name": "Launch Tests (Flutter Test Debug)",
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"${workspaceRoot}/src/test/test_projects/flutter_web",
+				"${workspaceRoot}/src/test/test_projects/flutter_hello_world",
 				"--extensionDevelopmentPath=${workspaceRoot}",
-				"--extensionTestsPath=${workspaceRoot}/out/src/test/flutter_web",
+				"--extensionTestsPath=${workspaceRoot}/out/src/test/flutter_test_debug",
+				"--user-data-dir=${workspaceRoot}/.dart_code_test_data_dir"
+			],
+			"env": {
+				"DART_CODE_IS_TEST_RUN": "true"
+			},
+			"outFiles": [
+				"${workspaceRoot}/out/**/*.js"
+			],
+			"preLaunchTask": "npm: watch-tests",
+			"smartStep": true,
+			"skipFiles": [
+				"<node_internals>/**",
+				"**/app/out/vs/**"
+			]
+		},
+		{
+			"name": "Launch Tests (Flutter Web Debug)",
+			"type": "extensionHost",
+			"request": "launch",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+				"${workspaceRoot}/src/test/test_projects/flutter_hello_world",
+				"--extensionDevelopmentPath=${workspaceRoot}",
+				"--extensionTestsPath=${workspaceRoot}/out/src/test/flutter_web_debug",
 				"--user-data-dir=${workspaceRoot}/.dart_code_test_data_dir"
 			],
 			"env": {
