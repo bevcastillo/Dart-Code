@@ -86,9 +86,11 @@ async function runAllTests(): Promise<void> {
 	try {
 		if (!process.env.BOT || process.env.BOT === "dart") {
 			await runTests("dart", "hello_world");
+			await runTests("dart_debug", "hello_world");
 		}
 		if (!process.env.BOT || process.env.BOT === "flutter") {
 			await runTests("flutter", "flutter_hello_world");
+			await runTests("flutter_debug", "flutter_hello_world");
 		}
 		if (!process.env.BOT || process.env.BOT === "flutter_web") {
 			await runTests("flutter_web", "flutter_web");
