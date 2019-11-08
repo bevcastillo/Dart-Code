@@ -42,6 +42,6 @@ export class FlutterWebDebugSession extends FlutterDebugSession {
 		}
 
 		// TODO: Attach?
-		return new FlutterWebRun(isAttach ? RunMode.Attach : RunMode.Run, args.pubPath, args.cwd, appArgs, args.env, args.webDaemonLogFile, logger, this.maxLogLineLength);
+		return new FlutterWebRun(isAttach ? RunMode.Attach : RunMode.Run, args.pubPath, args.cwd, appArgs, args.env, args.webDaemonLogFile, logger, (url) => this.exposeUrl(url), this.maxLogLineLength);
 	}
 }
