@@ -962,6 +962,9 @@ for (const deviceId of ["flutter-tester", "chrome"]) {
 		});
 
 		it("includes getters in variables when stopped at a breakpoint", async function () {
+			// This test has been seen to fail on Linux:
+			// https://github.com/dart-lang/sdk/issues/39330
+
 			if (deviceId === "chrome")
 				return this.skip();
 
