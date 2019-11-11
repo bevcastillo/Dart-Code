@@ -212,21 +212,26 @@ export class DebugConfigProvider implements DebugConfigurationProvider {
 		logger.info(`Using ${DebuggerType[debugType]} debug adapter for this session`);
 
 		if (debugType === DebuggerType.FlutterWebTest) {
+			logger.info(`###DEBUG### 1`);
 			// TODO: IMPORTANT! When removing this if statement, add FlutterWebTest to
 			// the call to TestResultsProvider.flagSuiteStart below!
 			logger.error("Tests in Flutter web projects are not currently supported");
 			window.showErrorMessage("Tests in Flutter web projects are not currently supported");
 			return undefined; // undefined means silent (don't open launch.json).
 		}
+		logger.info(`###DEBUG### 2`);
 
 		if (!isRunningLocally && debugType === DebuggerType.FlutterWeb) {
+			logger.info(`###DEBUG### 3`);
 			logger.error("Flutter web projects cannot currently run in remote workspaces");
 			window.showErrorMessage("Flutter web projects cannot currently run in remote workspaces");
 			return undefined; // undefined means silent (don't open launch.json).
 		}
+		logger.info(`###DEBUG### 4`);
 
 		// If we're attaching to Dart, ensure we get an observatory URI.
 		if (isAttachRequest) {
+			logger.info(`###DEBUG### 5`);
 			// For attaching, the Observatory address must be specified. If it's not provided already, prompt for it.
 			if (!isStandardFlutter) { // TEMP Condition because there's no point asking yet as the user doesn't know how to get this..
 				debugConfig.observatoryUri = await this.getFullVmServiceUri(debugConfig.observatoryUri/*, mostRecentAttachedProbablyReusableObservatoryUri*/);
@@ -238,42 +243,59 @@ export class DebugConfigProvider implements DebugConfigurationProvider {
 				return undefined; // undefined means silent (don't open launch.json).
 			}
 		}
+		logger.info(`###DEBUG### 6`);
 
-		if (token && token.isCancellationRequested)
+		if (token && token.isCancellationRequested) {
+			logger.info(`###DEBUG### 7`);
 			return;
+		}
 
+		logger.info(`###DEBUG### 8`);
 		let deviceToLaunchOn = this.deviceManager && this.deviceManager.currentDevice;
 
 		// Ensure we have a device if required.
 		if (isStandardFlutter && !isTest && this.deviceManager && this.daemon && debugConfig.deviceId !== "flutter-tester") {
+			logger.info(`###DEBUG### 9`);
 			const supportedPlatforms = this.daemon.capabilities.providesPlatformTypes && debugConfig.cwd
 				? (await this.daemon.getSupportedPlatforms(debugConfig.cwd)).platforms
 				: [];
 
 			// If the current device is not valid, prompt the user.
+			logger.info(`###DEBUG### 10`);
 			if (!this.deviceManager.isSupported(supportedPlatforms, deviceToLaunchOn))
 				deviceToLaunchOn = await this.deviceManager.showDevicePicker(supportedPlatforms);
 
 			// If we still don't have a valid device, show an error.
 			if (!this.deviceManager.isSupported(supportedPlatforms, deviceToLaunchOn)) {
+				logger.info(`###DEBUG### 11`);
 				logger.warn("Unable to launch due to no active device");
 				window.showInformationMessage("Cannot launch without an active device");
 				return undefined; // undefined means silent (don't open launch.json).
 			}
+			logger.info(`###DEBUG### 12`);
 		}
 
-		if (token && token.isCancellationRequested)
+		logger.info(`###DEBUG### 13`);
+		if (token && token.isCancellationRequested) {
+			logger.info(`###DEBUG### 14`);
 			return;
+		}
 
 		// Ensure we have any require dependencies.
+		logger.info(`###DEBUG### 15`);
 		if (!(await this.installDependencies(debugType, this.pubGlobal))) {
+			logger.info(`###DEBUG### 16`);
 			return undefined;
 		}
 
-		if (token && token.isCancellationRequested)
+		logger.info(`###DEBUG### 17`);
+		if (token && token.isCancellationRequested) {
+			logger.info(`###DEBUG### 18`);
 			return;
+		}
 
 		// TODO: This cast feels nasty?
+		logger.info(`###DEBUG### 19`);
 		this.setupDebugConfig(folder, debugConfig as any as FlutterLaunchRequestArguments, isAnyFlutter, deviceToLaunchOn, this.deviceManager);
 
 		// Debugger always uses uppercase drive letters to ensure our paths have them regardless of where they came from.
@@ -282,6 +304,7 @@ export class DebugConfigProvider implements DebugConfigurationProvider {
 
 		// If we're launching (not attaching) then check there are no errors before we launch.
 		if (!isAttachRequest && debugConfig.cwd && config.promptToRunIfErrors) {
+			logger.info(`###DEBUG### 20`);
 			logger.info("Checking for errors before launching");
 			const isDartError = (d: vs.Diagnostic) => d.source === "dart" && d.severity === vs.DiagnosticSeverity.Error;
 			const dartErrors = vs.languages
@@ -318,8 +341,11 @@ export class DebugConfigProvider implements DebugConfigurationProvider {
 			}
 		}
 
-		if (token && token.isCancellationRequested)
+		logger.info(`###DEBUG### 21`);
+		if (token && token.isCancellationRequested) {
+			logger.info(`###DEBUG### 22`);
 			return;
+		}
 
 		// Start port listener on launch of first debug session.
 		const debugServer = this.getDebugServer(debugType, debugConfig.debugServer);
@@ -327,7 +353,9 @@ export class DebugConfigProvider implements DebugConfigurationProvider {
 
 		// Updated node bindings say address can be a string (used for pipes) but
 		// this should never be the case here. This check is to keep the types happy.
+		logger.info(`###DEBUG### 23`);
 		if (typeof serverAddress === "string") {
+			logger.info(`###DEBUG### 24`);
 			logger.info("Debug server does not have a valid address");
 			window.showErrorMessage("Debug server does not have a valid address");
 			return undefined;
@@ -339,6 +367,7 @@ export class DebugConfigProvider implements DebugConfigurationProvider {
 
 		// We don't support debug for (unforked) FlutterWeb
 		if (debugType === DebuggerType.FlutterWeb && !debugConfig.noDebug) {
+			logger.info(`###DEBUG### 25`);
 			// TODO: Support this! :)
 			debugConfig.noDebug = true;
 			if (!hasShownFlutterWebDebugWarning) {
@@ -347,6 +376,7 @@ export class DebugConfigProvider implements DebugConfigurationProvider {
 			}
 		}
 
+		logger.info(`###DEBUG### 26`);
 		this.analytics.logDebuggerStart(folder && folder.uri, DebuggerType[debugType], debugConfig.noDebug ? "Run" : "Debug");
 		if (debugType === DebuggerType.FlutterTest /*|| debugType === DebuggerType.FlutterWebTest*/ || debugType === DebuggerType.PubTest) {
 			const isRunningTestSubset = debugConfig.args && (debugConfig.args.indexOf("--name") !== -1 || debugConfig.args.indexOf("--pname") !== -1);
@@ -362,6 +392,7 @@ export class DebugConfigProvider implements DebugConfigurationProvider {
 		LastDebugSession.debugConfig = Object.assign({}, debugConfig);
 		vs.commands.executeCommand("setContext", HAS_LAST_DEBUG_CONFIG, true);
 
+		logger.info(`###DEBUG### 27`);
 		return debugConfig;
 	}
 
