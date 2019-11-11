@@ -242,7 +242,7 @@
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"${workspaceRoot}/src/test/test_projects/flutter_hello_world",
+				"${workspaceRoot}/src/test/test_projects/flutter_web",
 				"--extensionDevelopmentPath=${workspaceRoot}",
 				"--extensionTestsPath=${workspaceRoot}/out/src/test/flutter_web_debug",
 				"--user-data-dir=${workspaceRoot}/.dart_code_test_data_dir"
