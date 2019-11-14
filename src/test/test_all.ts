@@ -6,7 +6,7 @@ let exitCode = 0;
 const cwd = process.cwd();
 const testEnv = Object.create(process.env);
 
-async function runTests(testFolder: string, workspaceFolder: string): Promise<void> {
+async function runTests(testFolder: string, workspaceFolder: string, env?: {}): Promise<void> {
 	console.log(
 		`Running ${testFolder} tests folder in workspace ${workspaceFolder}`);
 
@@ -45,7 +45,7 @@ async function runTests(testFolder: string, workspaceFolder: string): Promise<vo
 	try {
 		const res = await vstest.runTests({
 			extensionDevelopmentPath: cwd,
-			extensionTestsEnv: testEnv,
+			extensionTestsEnv: { ...testEnv, ...env },
 			extensionTestsPath: path.join(cwd, "out", "src", "test", testFolder),
 			launchArgs: [
 				path.isAbsolute(workspaceFolder)
@@ -101,6 +101,9 @@ async function runAllTests(): Promise<void> {
 		}
 		if (!process.env.BOT || process.env.BOT === "flutter_web_debug") {
 			await runTests("flutter_web_debug", "flutter_web");
+		}
+		if (!process.env.BOT || process.env.BOT === "flutter_web_debug_chrome") {
+			await runTests("flutter_web_debug", "flutter_web", { FLUTTER_TEST_DEVICE_ID: "chrome" });
 		}
 		if (!process.env.BOT || process.env.BOT === "misc") {
 			await runTests("dart_create_tests", "dart_create_tests.code-workspace");
