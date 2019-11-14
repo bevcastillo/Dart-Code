@@ -61,7 +61,7 @@ describe(`flutter run debugger (launch on ${flutterTestDeviceId})`, () => {
 		return config;
 	}
 
-	it.only("runs and remains active until told to quit", async () => {
+	it("runs and remains active until told to quit", async () => {
 		const config = await startDebugger(flutterHelloWorldMainFile);
 		await Promise.all([
 			dc.assertOutputContains("stdout", `Launching lib${path.sep}main.dart on ${deviceName} in debug mode...\n`),
