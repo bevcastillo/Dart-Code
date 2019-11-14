@@ -96,14 +96,14 @@ async function runAllTests(): Promise<void> {
 		if (!process.env.BOT || process.env.BOT === "flutter_debug") {
 			await runTests("flutter_debug", "flutter_hello_world");
 		}
+		if (!process.env.BOT || process.env.BOT === "flutter_debug_chrome") {
+			await runTests("flutter_debug", "flutter_hello_world", { FLUTTER_TEST_DEVICE_ID: "chrome" });
+		}
 		if (!process.env.BOT || process.env.BOT === "flutter_test_debug") {
 			await runTests("flutter_test_debug", "flutter_hello_world");
 		}
 		if (!process.env.BOT || process.env.BOT === "flutter_web_debug") {
 			await runTests("flutter_web_debug", "flutter_web");
-		}
-		if (!process.env.BOT || process.env.BOT === "flutter_web_debug_chrome") {
-			await runTests("flutter_web_debug", "flutter_web", { FLUTTER_TEST_DEVICE_ID: "chrome" });
 		}
 		if (!process.env.BOT || process.env.BOT === "misc") {
 			await runTests("dart_create_tests", "dart_create_tests.code-workspace");
