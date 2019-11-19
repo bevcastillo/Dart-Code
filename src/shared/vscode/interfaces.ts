@@ -1,5 +1,5 @@
 import * as child_process from "child_process";
-import { CompletionItem, CompletionItemProvider, DebugConfigurationProvider, DebugSession, DebugSessionCustomEvent, MarkdownString, TextDocument, TreeDataProvider, TreeItem, Uri } from "vscode";
+import { CompletionItem, CompletionItemProvider, DebugConfigurationProvider, DebugSession, DebugSessionCustomEvent, MarkdownString, RenameProvider, TextDocument, TreeDataProvider, TreeItem, Uri } from "vscode";
 import { LanguageClient } from "vscode-languageclient";
 import { AvailableSuggestion, FlutterOutline, Outline } from "../analysis_server_types";
 import { FlutterService, FlutterServiceExtension, TestStatus, VersionStatus } from "../enums";
