@@ -103,6 +103,7 @@ export function getSdkVersion(logger: Logger, sdkRoot?: string): string | undefi
 }
 
 export function isAnalyzable(file: { uri: Uri, isUntitled?: boolean, languageId?: string }): boolean {
+	// Keep this in-sync with the LSP setup.
 	if (file.isUntitled || !fsPath(file.uri) || file.uri.scheme !== "file")
 		return false;
 
