@@ -180,7 +180,7 @@ export class SdkUtils {
 		let firstFlutterMobileProject: string | undefined;
 		let hasAnyFlutterProject: boolean = false;
 		let hasAnyFlutterMobileProject: boolean = false;
-		let hasAnyFlutterWebProject: boolean = false;
+		let hasAnyWebProject: boolean = false;
 		let hasAnyStandardDartProject: boolean = false;
 
 		const allPossibleProjectFolders = await findProjectFolders(topLevelFolders);
@@ -189,19 +189,19 @@ export class SdkUtils {
 		allPossibleProjectFolders.forEach((folder) => {
 			const hasPubspecFile = hasPubspec(folder);
 			const refsFlutter = hasPubspecFile && referencesFlutterSdk(folder);
-			const refsFlutterWeb = hasPubspecFile && referencesFlutterWeb(folder);
+			const refsWeb = false; // hasPubspecFile && referencesWeb(folder);
 			const hasFlutterCreateProjectTriggerFile =
 				fs.existsSync(path.join(folder, FLUTTER_CREATE_PROJECT_TRIGGER_FILE));
 
 			// Special case to detect the Flutter repo root, so we always consider it a Flutter project and will use the local SDK
 			const isFlutterRepo = fs.existsSync(path.join(folder, "bin/flutter")) && fs.existsSync(path.join(folder, "bin/cache/dart-sdk"));
 
-			const isSomethingFlutter = refsFlutter || refsFlutterWeb || hasFlutterCreateProjectTriggerFile || isFlutterRepo;
+			const isSomethingFlutter = refsFlutter || hasFlutterCreateProjectTriggerFile || isFlutterRepo;
 
 			if (isSomethingFlutter) {
 				this.logger.info(`Found Flutter project at ${folder}:
 			Mobile? ${refsFlutter}
-			Web? ${refsFlutterWeb}
+			Web? ${refsWeb}
 			Create Trigger? ${hasFlutterCreateProjectTriggerFile}
 			Flutter Repo? ${isFlutterRepo}`);
 			}
@@ -211,8 +211,8 @@ export class SdkUtils {
 
 			// Set some flags we'll use to construct the workspace, so we know what things we need to light up.
 			hasAnyFlutterProject = hasAnyFlutterProject || isSomethingFlutter;
-			hasAnyFlutterMobileProject = hasAnyFlutterMobileProject || (refsFlutter && !refsFlutterWeb) || hasFlutterCreateProjectTriggerFile;
-			hasAnyFlutterWebProject = hasAnyFlutterWebProject || refsFlutterWeb;
+			hasAnyFlutterMobileProject = hasAnyFlutterMobileProject || refsFlutter || hasFlutterCreateProjectTriggerFile;
+			hasAnyWebProject = hasAnyWebProject || refsWeb;
 			hasAnyStandardDartProject = hasAnyStandardDartProject || (!isSomethingFlutter && hasPubspecFile);
 		});
 
@@ -259,7 +259,7 @@ export class SdkUtils {
 				flutterVersion: getSdkVersion(this.logger, flutterSdkPath),
 			},
 			hasAnyFlutterMobileProject,
-			hasAnyFlutterWebProject,
+			hasAnyWebProject,
 			hasAnyStandardDartProject,
 			!!fuchsiaRoot && hasAnyStandardDartProject,
 			isDartSdkRepo,
@@ -342,14 +342,6 @@ export class SdkUtils {
 export function referencesFlutterSdk(folder?: string): boolean {
 	if (folder && hasPubspec(folder)) {
 		const regex = new RegExp("sdk\\s*:\\s*flutter", "i");
-		return regex.test(fs.readFileSync(path.join(folder, "pubspec.yaml")).toString());
-	}
-	return false;
-}
-
-export function referencesFlutterWeb(folder?: string): boolean {
-	if (folder && hasPubspec(folder)) {
-		const regex = new RegExp("\\s*flutter_web\\s*:", "i");
 		return regex.test(fs.readFileSync(path.join(folder, "pubspec.yaml")).toString());
 	}
 	return false;
